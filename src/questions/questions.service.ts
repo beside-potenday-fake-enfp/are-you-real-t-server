@@ -443,7 +443,7 @@ export class QuestionsService {
     }));
   }
 
-  // 3. 질문지 상세 반환 - 완료(투표한 answerId 반환 로직 제외)
+  // 3. 질문지 상세 반환 - 완료
   getQuestionById(id: string, testerId: string) {
     const question = questionArray.find((q) => q.id === id);
 
@@ -460,7 +460,17 @@ export class QuestionsService {
         id: answer.id,
         content: answer.content,
         tag: answer.tag,
-        selectCount: answer.selectCount,
+        countMeta: {
+          total: answer.selectCount,
+          tag1: {
+            tag: 'I',
+            count: answer.selectCount,
+          },
+          tag2: {
+            tag: 'E',
+            count: answer.selectCount,
+          },
+        },
       })),
       voteCount: question.voteCount,
       votedAnswerId: userVote ? userVote.answerId : null,
