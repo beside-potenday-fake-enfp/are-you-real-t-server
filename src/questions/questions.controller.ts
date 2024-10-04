@@ -60,11 +60,15 @@ export class QuestionsController {
     return this.questionsService.vote(voteData);
   }
 
-  // 7. 결과지 상세 반환
-  // @Get('/test/:id')
-  // getTestResultById(@Param('id') id: string) {
-  //   return this.questionsService.getTestResultById(id);
-  // }
+  // 7. GET /questions/result/:id - 결과지 상세 반환
+  @Get('/result/:id')
+  getTestResultById(@Param('id') id: string) {
+    return this.questionsService.getTestResultById(id);
+  }
 
-  // 8. 결과지 id 반환
+  // 8. POST /questions/result - 결과지 생성(결과지 id 반환)
+  @Post('/result')
+  createResult(@Body() body: any) {
+    return this.questionsService.createResult(body);
+  }
 }

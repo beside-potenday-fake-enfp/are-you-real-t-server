@@ -305,6 +305,98 @@ const voteArray = [
   // },
 ];
 
+const testResultArray = [
+  {
+    id: '1',
+    prevMbti: 'INFJ',
+    nextMbti: 'ENTJ',
+    description: '간략한 설명 두줄',
+    imageUrl: '',
+    changedQuestions: [
+      {
+        prevType: 'I',
+        nextType: 'E',
+        title: '너 I 아닌 거 같은데?',
+        question: {
+          id: '1',
+          type: 'energy',
+          content: '평생 주말을 한 가지 방법으로만 보낸다면?',
+          answerList: [
+            {
+              id: '1',
+              content: '바깥공기 알러지 있어서 맨날 집에 칩거하기',
+              tag: 'I',
+              countMeta: {
+                total: 10,
+                tag1: { tag: 'I', count: 7 },
+                tag2: { tag: 'E', count: 3 },
+              },
+            },
+            {
+              id: '2',
+              content:
+                '침대에 10분 이상 있으면 몸에 두드러기 나서 맨날 외출하기',
+              tag: 'E',
+              countMeta: {
+                total: 20,
+                tag1: { tag: 'I', count: 8 },
+                tag2: { tag: 'E', count: 12 },
+              },
+            },
+          ],
+          votedAnswerId: '1',
+        },
+      },
+      {
+        prevType: 'N',
+        nextType: 'S',
+        title: '너 N 아닌 거 같은데?',
+        question: {
+          id: '5',
+          type: 'information',
+          content: '질문 내용',
+          answerList: [
+            {
+              id: '3',
+              content: '바깥공기 알러지 있어서 맨날 집에 칩거하기',
+              tag: 'S',
+              countMeta: {
+                total: 10,
+                tag1: { tag: 'S', count: 6 },
+                tag2: { tag: 'N', count: 4 },
+              },
+            },
+            {
+              id: '4',
+              content:
+                '침대에 10분 이상 있으면 몸에 두드러기 나서 맨날 외출하기',
+              tag: 'N',
+              countMeta: {
+                total: 15,
+                tag1: { tag: 'S', count: 5 },
+                tag2: { tag: 'N', count: 10 },
+              },
+            },
+          ],
+          votedAnswerId: '4',
+        },
+      },
+    ],
+    recommendQuestions: [
+      {
+        id: '4',
+        type: 'information',
+        content: '질문 내용용',
+      },
+      {
+        id: '6',
+        type: 'energy',
+        content: '질문 내용용용',
+      },
+    ],
+  },
+];
+
 @Injectable()
 export class QuestionsService {
   private test = [];
@@ -423,6 +515,21 @@ export class QuestionsService {
     };
   }
 
-  // 7. 결과지 상세
-  getTestResultById(id: string) {}
+  // 7. 결과지 상세 반환 -
+  getTestResultById(id: string) {
+    const testResult = testResultArray.find(
+      (testResult) => testResult.id === id,
+    );
+
+    return testResult;
+  }
+
+  // 8. 결과지 생성
+  createResult(body: any) {
+    const { answerId, testerId, prevMbti } = body;
+
+    return {
+      resultId: (testResultArray.length + 1).toString(),
+    };
+  }
 }
