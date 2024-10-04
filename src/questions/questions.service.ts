@@ -467,6 +467,7 @@ export class QuestionsService {
         testerId: comment.testerId,
         mbti: comment.mbti,
         content: comment.content,
+        createdAt: comment.createdAt,
       })),
     };
   }
