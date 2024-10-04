@@ -4,6 +4,7 @@ const questionArray = [
     id: '1',
     type: 'energy',
     content: '한 가지 방식으로만 말할 수 있다면?',
+    imageUrl: '',
     answerList: [
       {
         id: '1',
@@ -26,6 +27,7 @@ const questionArray = [
     id: '2',
     type: 'energy',
     content: '평생 주말을 한 가지 방법으로만 보낸다면?',
+    imageUrl: '',
     answerList: [
       {
         id: '3',
@@ -47,6 +49,7 @@ const questionArray = [
     id: '3',
     type: 'energy',
     content: '팀 프로젝트, 회의에서 한 가지만 할 수 있다면?',
+    imageUrl: '',
     answerList: [
       {
         id: '5',
@@ -68,6 +71,7 @@ const questionArray = [
     id: '4',
     type: 'information',
     content: '평생 취미를 하나만 가질 수 있다면?',
+    imageUrl: '',
     answerList: [
       {
         id: '7',
@@ -89,6 +93,7 @@ const questionArray = [
     id: '5',
     type: 'information',
     content: '샤워할 때 하는 생각은?',
+    imageUrl: '',
     answerList: [
       {
         id: '9',
@@ -111,6 +116,7 @@ const questionArray = [
     id: '6',
     type: 'information',
     content: '누군가를 좋아하기 시작한다면?',
+    imageUrl: '',
     answerList: [
       {
         id: '11',
@@ -133,6 +139,7 @@ const questionArray = [
     id: '7',
     type: 'decision',
     content: '발 없는 말이 ____',
+    imageUrl: '',
     answerList: [
       {
         id: '13',
@@ -154,6 +161,7 @@ const questionArray = [
     id: '8',
     type: 'decision',
     content: '인생이 막막할 때 나는',
+    imageUrl: '',
     answerList: [
       {
         id: '15',
@@ -175,6 +183,7 @@ const questionArray = [
     id: '9',
     type: 'decision',
     content: '슬픔을 나누면',
+    imageUrl: '',
     answerList: [
       {
         id: '17',
@@ -196,6 +205,7 @@ const questionArray = [
     id: '10',
     type: 'lifeStyle',
     content: '다음 날 입을 옷을 고른다면?',
+    imageUrl: '',
     answerList: [
       {
         id: '19',
@@ -218,6 +228,7 @@ const questionArray = [
     id: '11',
     type: 'lifeStyle',
     content: '통학/통근 시간을 고를 수 있다면?',
+    imageUrl: '',
     answerList: [
       {
         id: '21',
@@ -239,6 +250,7 @@ const questionArray = [
     id: '12',
     type: 'lifeStyle',
     content: '자격증 시험을 준비하는 방식은?',
+    imageUrl: '',
     answerList: [
       {
         id: '23',
@@ -407,6 +419,7 @@ export class QuestionsService {
       .map((question) => ({
         id: question.id,
         content: question.content,
+        imageUrl: question.imageUrl,
         answerList: question.answerList.map((answer) => ({
           id: answer.id,
           content: answer.content,
@@ -442,6 +455,7 @@ export class QuestionsService {
       id: question.id,
       type: question.type,
       content: question.content,
+      imageUrl: question.imageUrl,
       answerList: question.answerList.map((answer) => ({
         id: answer.id,
         content: answer.content,
