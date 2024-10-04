@@ -1,19 +1,70 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Post, Query, Param, Body } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
+import { CommentsService } from '../comments/comments.service';
 
 @Controller('questions')
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
 
-  // 전체 질문 랜덤 반환(각 태그별 비율 맞춰서)
-  @Get()
-  findAll() {
-    return this.questionsService.findAll();
+  // 1. GET /questions/tmp - 12개 질문 리스트 반환
+  @Get('/tmp')
+  get12RandomQuestions() {
+    return this.questionsService.get12RandomQuestions();
   }
 
-  // 특정 질문 반환
-  @Get('/:id')
-  findById(@Param('id') id: string) {
-    return this.questionsService.findById(id);
+  // 2. GET /questions - 전체 질문 리스트 반환
+  @Get()
+  getAllQuestions() {
+    return this.questionsService.getAllQuestions();
   }
+
+  // 3. GET /questions/:id - 질문 상세 반환
+  @Get('/:id')
+  getQuestionById(
+    @Param('id') id: string,
+    @Query('testerId') testerId: string,
+  ) {
+    return this.questionsService.getQuestionById(id, testerId);
+  }
+
+  // 4. GET /questions/comment - 질문지에 대한 댓글 리스트 반환
+  @Get('/comment/t')
+  getCommentsByQuestionId(@Query('questionId') questionId: string) {
+    return this.questionsService.getCommentsByQuestionId(questionId);
+  }
+
+  // 5. POST /questions/comment - 댓글 작성
+  @Post('/comment')
+  createComment(
+    @Body()
+    commentData: {
+      testerId: string;
+      questionId: string;
+      mbti: string;
+      content: string;
+    },
+  ) {
+    return this.questionsService.createComment(commentData);
+  }
+
+  // 6. POST /questions/vote - 답변 투표하기
+  @Post('/vote')
+  vote(
+    @Body()
+    voteData: {
+      testerId: string;
+      questionId: string;
+      answerId: string;
+    },
+  ) {
+    return this.questionsService.vote(voteData);
+  }
+
+  // 7. 결과지 상세 반환
+  // @Get('/test/:id')
+  // getTestResultById(@Param('id') id: string) {
+  //   return this.questionsService.getTestResultById(id);
+  // }
+
+  // 8. 결과지 id 반환
 }
