@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Query, Param, Body } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
-import { CommentsService } from '../comments/comments.service';
 
 @Controller('questions')
 export class QuestionsController {
@@ -29,8 +28,8 @@ export class QuestionsController {
   createComment(
     @Body()
     commentData: {
-      testerId: string;
-      questionId: string;
+      testerId: number;
+      questionId: number;
       mbti: string;
       content: string;
     },
@@ -43,9 +42,9 @@ export class QuestionsController {
   vote(
     @Body()
     voteData: {
-      testerId: string;
-      questionId: string;
-      answerId: string;
+      testerId: number;
+      questionId: number;
+      answerId: number;
     },
   ) {
     return this.questionsService.vote(voteData);
@@ -59,7 +58,9 @@ export class QuestionsController {
 
   // 8. POST /questions/result - 결과지 생성(결과지 id 반환)
   @Post('/result')
-  createResult(@Body() body: any) {
+  createResult(
+    @Body() body: { answerId: number[]; testerId: number; prevMbti: string },
+  ) {
     return this.questionsService.createResult(body);
   }
 

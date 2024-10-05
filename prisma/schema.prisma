@@ -15,6 +15,7 @@ model Question {
   answers   Answer[]
   votes     Vote[]
   comments  Comment[]
+  testAnswers TestAnswer[]
 }
 
 model Answer {
@@ -31,7 +32,7 @@ model Answer {
 
 model Comment {
   id         Int       @id @default(autoincrement())
-  testerId   String
+  testerId   Int
   questionId Int
   mbti       String
   content    String
@@ -43,7 +44,7 @@ model Comment {
 
 model Vote {
   id         Int       @id @default(autoincrement())
-  testerId   String
+  testerId   Int
   questionId Int
   answerId   Int
 
@@ -54,7 +55,7 @@ model Vote {
 
 model Result {
   id          Int          @id @default(autoincrement())
-  testerId    String
+  testerId    Int
   prevMbti    String
   nextMbti    String
   description String
@@ -71,11 +72,12 @@ model TestAnswer {
   answerId   Int
 
   result     Result    @relation(fields: [resultId], references: [id])
+  question   Question  @relation(fields: [questionId], references: [id])
   answer     Answer    @relation(fields: [answerId], references: [id])
 }
 
 model Tester {
-  testerId  String    @id @unique
+  testerId  Int       @id @unique
   comments  Comment[]
   votes     Vote[]
   results   Result[]
