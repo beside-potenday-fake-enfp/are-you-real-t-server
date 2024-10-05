@@ -342,12 +342,16 @@ export class QuestionsService {
       }
     }
 
+    const baseUrl = 'https://fake-enfp.shop';
+    const lastImageName = `/public/${nextMbti}.png`;
+
     const newResult = await this.prisma.result.create({
       data: {
         testerId: body.testerId,
         prevMbti: body.prevMbti,
         nextMbti,
         description: `이전 MBTI: ${body.prevMbti}, 새로운 MBTI: ${nextMbti}`,
+        imageUrl: `${baseUrl}${lastImageName}`,
         testAnswers: {
           create: testAnswerData,
         },
