@@ -18,17 +18,8 @@ export class QuestionsController {
     return this.questionsService.getAllQuestions();
   }
 
-  // 3. GET /questions/:id - 질문 상세 반환
-  @Get('/:id')
-  getQuestionById(
-    @Param('id') id: string,
-    @Query('testerId') testerId: string,
-  ) {
-    return this.questionsService.getQuestionById(id, testerId);
-  }
-
   // 4. GET /questions/comment - 질문지에 대한 댓글 리스트 반환
-  @Get('/comment/t')
+  @Get('/comment')
   getCommentsByQuestionId(@Query('questionId') questionId: string) {
     return this.questionsService.getCommentsByQuestionId(questionId);
   }
@@ -70,5 +61,14 @@ export class QuestionsController {
   @Post('/result')
   createResult(@Body() body: any) {
     return this.questionsService.createResult(body);
+  }
+
+  // 3. GET /questions/:id - 질문 상세 반환
+  @Get('/:id')
+  getQuestionById(
+    @Param('id') id: string,
+    @Query('testerId') testerId: string,
+  ) {
+    return this.questionsService.getQuestionById(id, testerId);
   }
 }
