@@ -9,8 +9,8 @@ datasource db {
 
 model Question {
   id        Int       @id @default(autoincrement())
-  type      String
-  content   String
+  type      String?
+  content   String?
   imageUrl  String?
   answers   Answer[]
   votes     Vote[]
@@ -20,9 +20,9 @@ model Question {
 
 model Answer {
   id         Int       @id @default(autoincrement())
-  questionId Int
-  content    String
-  tag        String
+  questionId Int?
+  content    String?
+  tag        String?
   countMeta  Json?
 
   question   Question? @relation(fields: [questionId], references: [id])
@@ -32,10 +32,10 @@ model Answer {
 
 model Comment {
   id         Int       @id @default(autoincrement())
-  testerId   String
-  questionId Int
-  mbti       String
-  content    String
+  testerId   String?
+  questionId Int?
+  mbti       String?
+  content    String?
   createdAt  DateTime  @default(now())
 
   question   Question?  @relation(fields: [questionId], references: [id])
@@ -44,9 +44,9 @@ model Comment {
 
 model Vote {
   id         Int       @id @default(autoincrement())
-  testerId   String
-  questionId Int
-  answerId   Int
+  testerId   String?
+  questionId Int?
+  answerId   Int?
 
   question   Question?  @relation(fields: [questionId], references: [id])
   answer     Answer?    @relation(fields: [answerId], references: [id])
@@ -67,9 +67,9 @@ model Result {
 
 model TestAnswer {
   id         Int        @id @default(autoincrement())
-  resultId   Int
-  questionId Int
-  answerId   Int
+  resultId   Int?
+  questionId Int?
+  answerId   Int?
 
   result     Result?    @relation(fields: [resultId], references: [id])
   question   Question?  @relation(fields: [questionId], references: [id])
@@ -78,7 +78,7 @@ model TestAnswer {
 
 model Tester {
   id        String       @id @unique
-  mbti      String
+  mbti      String?
   comments  Comment[]
   votes     Vote[]
   results   Result[]
