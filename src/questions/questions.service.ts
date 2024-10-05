@@ -60,6 +60,40 @@ export class QuestionsService {
   }
 
   // 3. 질문지 상세 반환
+  // async getQuestionById(id: string, testerId: string) {
+  //   const question = await this.prisma.question.findUnique({
+  //     where: {
+  //       id: parseInt(id),
+  //     },
+  //     include: {
+  //       answers: true,
+  //       votes: true,
+  //     },
+  //   });
+
+  //   const userVote = await this.prisma.vote.findFirst({
+  //     where: {
+  //       testerId: testerId,
+  //       questionId: parseInt(id),
+  //     },
+  //   });
+
+  //   return {
+  //     id: question.id,
+  //     type: question.type,
+  //     content: question.content,
+  //     imageUrl: question.imageUrl,
+  //     answerList: question.answers.map((answer) => ({
+  //       id: answer.id,
+  //       content: answer.content,
+  //       tag: answer.tag,
+  //       countMeta: answer.countMeta,
+  //     })),
+  //     voteCount: question.votes.length,
+  //     votedAnswerId: userVote ? userVote.answerId : null,
+  //   };
+  // }
+  // 3번 Mock API
   async getQuestionById(id: string, testerId: string) {
     const question = await this.prisma.question.findUnique({
       where: {
@@ -87,7 +121,11 @@ export class QuestionsService {
         id: answer.id,
         content: answer.content,
         tag: answer.tag,
-        countMeta: answer.countMeta,
+        countMeta: {
+          total: 10,
+          tag1: { tag: 'I', count: '7' },
+          tag2: { tag: 'E', count: '3' },
+        },
       })),
       voteCount: question.votes.length,
       votedAnswerId: userVote ? userVote.answerId : null,
@@ -208,6 +246,89 @@ export class QuestionsService {
     };
   }
 
+  // // 7. 결과지 상세 반환
+  // async getTestResultById(id: string) {
+  //   const testResult = await this.prisma.result.findUnique({
+  //     where: { id: parseInt(id) },
+  //     include: {
+  //       testAnswers: {
+  //         include: {
+  //           question: {
+  //             include: {
+  //               answers: true,
+  //             },
+  //           },
+  //           answer: true,
+  //         },
+  //       },
+  //     },
+  //   });
+
+  //   if (!testResult) {
+  //     throw new Error('존재하지 않는 결과지입니다.');
+  //   }
+
+  //   const changedQuestions = testResult.testAnswers.map((testAnswer) => {
+  //     const prevType =
+  //       testAnswer.answer.tag === 'I'
+  //         ? 'E'
+  //         : testAnswer.answer.tag === 'E'
+  //           ? 'I'
+  //           : testAnswer.answer.tag === 'S'
+  //             ? 'N'
+  //             : testAnswer.answer.tag === 'N'
+  //               ? 'S'
+  //               : testAnswer.answer.tag === 'T'
+  //                 ? 'F'
+  //                 : testAnswer.answer.tag === 'F'
+  //                   ? 'T'
+  //                   : testAnswer.answer.tag === 'J'
+  //                     ? 'P'
+  //                     : 'J';
+
+  //     return {
+  //       prevType,
+  //       nextType: testAnswer.answer.tag,
+  //       title: `너 ${testAnswer.question.type} 아닌 거 같은데?`,
+  //       question: {
+  //         id: testAnswer.question.id,
+  //         type: testAnswer.question.type,
+  //         content: testAnswer.question.content,
+  //         answerList: testAnswer.question.answers.map((answer) => ({
+  //           id: answer.id,
+  //           content: answer.content,
+  //           tag: answer.tag,
+  //           countMeta: answer.countMeta,
+  //         })),
+  //         votedAnswerId: testAnswer.answer.id,
+  //       },
+  //     };
+  //   });
+
+  //   const recommendQuestions = await this.prisma.question.findMany({
+  //     where: {
+  //       id: {
+  //         notIn: changedQuestions.map((q) => q.question.id),
+  //       },
+  //     },
+  //     take: 2,
+  //   });
+
+  //   return {
+  //     id: testResult.id,
+  //     prevMbti: testResult.prevMbti,
+  //     nextMbti: testResult.nextMbti,
+  //     description: testResult.description,
+  //     imageUrl: testResult.imageUrl,
+  //     changedQuestions,
+  //     recommendQuestions: recommendQuestions.map((question) => ({
+  //       id: question.id,
+  //       type: question.type,
+  //       content: question.content,
+  //     })),
+  //   };
+  // }
+  // 7 - Mock API
   // 7. 결과지 상세 반환
   async getTestResultById(id: string) {
     const testResult = await this.prisma.result.findUnique({
@@ -260,7 +381,11 @@ export class QuestionsService {
             id: answer.id,
             content: answer.content,
             tag: answer.tag,
-            countMeta: answer.countMeta,
+            countMeta: {
+              total: 10,
+              tag1: { tag: 'I', count: '7' },
+              tag2: { tag: 'E', count: '3' },
+            },
           })),
           votedAnswerId: testAnswer.answer.id,
         },
