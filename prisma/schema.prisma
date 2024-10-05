@@ -39,7 +39,7 @@ model Comment {
   createdAt  DateTime  @default(now())
 
   question   Question?  @relation(fields: [questionId], references: [id])
-  tester     Tester?    @relation(fields: [testerId], references: [testerId])
+  tester     Tester?    @relation(fields: [testerId], references: [id])
 }
 
 model Vote {
@@ -48,9 +48,9 @@ model Vote {
   questionId Int
   answerId   Int
 
-  question   Question? @relation(fields: [questionId], references: [id])
+  question   Question?  @relation(fields: [questionId], references: [id])
   answer     Answer?    @relation(fields: [answerId], references: [id])
-  tester     Tester?    @relation(fields: [testerId], references: [testerId])
+  tester     Tester?    @relation(fields: [testerId], references: [id])
 }
 
 model Result {
@@ -62,7 +62,7 @@ model Result {
   imageUrl    String?
 
   testAnswers TestAnswer[]
-  tester      Tester?       @relation(fields: [testerId], references: [testerId])
+  tester      Tester?       @relation(fields: [testerId], references: [id])
 }
 
 model TestAnswer {
@@ -77,7 +77,7 @@ model TestAnswer {
 }
 
 model Tester {
-  testerId  String       @id @unique
+  id        String       @id @unique
   mbti      String
   comments  Comment[]
   votes     Vote[]

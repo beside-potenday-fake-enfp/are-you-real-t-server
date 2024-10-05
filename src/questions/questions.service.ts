@@ -159,12 +159,12 @@ export class QuestionsService {
     content: string;
   }) {
     let tester = await this.prisma.tester.findUnique({
-      where: { testerId: commentData.testerId },
+      where: { id: commentData.testerId },
     });
 
     if (!tester) {
       tester = await this.prisma.tester.create({
-        data: { testerId: commentData.testerId, mbti: commentData.mbti },
+        data: { id: commentData.testerId, mbti: commentData.mbti },
       });
     }
 
@@ -188,13 +188,13 @@ export class QuestionsService {
     const { testerId, questionId, answerId, mbti } = voteData;
     // tester 데이터 생성
     let tester = await this.prisma.tester.findUnique({
-      where: { testerId },
+      where: { id: testerId },
     });
 
     if (!tester) {
       tester = await this.prisma.tester.create({
         data: {
-          testerId,
+          id: testerId,
           mbti,
         },
       });
@@ -425,13 +425,13 @@ export class QuestionsService {
     const { answerId, testerId, prevMbti } = body;
     // tester 데이터 생성
     let tester = await this.prisma.tester.findUnique({
-      where: { testerId: body.testerId },
+      where: { id: body.testerId },
     });
 
     if (!tester) {
       tester = await this.prisma.tester.create({
         data: {
-          testerId,
+          id: testerId,
           mbti: prevMbti,
         },
       });
