@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Question {
+  id        Int       @id @default(autoincrement())
+  type      String
+  content   String
+  imageUrl  String?
+  answers   Answer[]
+  votes     Vote[]
+  comments  Comment[]
+  testAnswers TestAnswer[]
+}
+
+model Answer {
+  id         Int       @id @default(autoincrement())
+  questionId Int
+  content    String
+  tag        String
+  countMeta  Json?
+
+  question   Question  @relation(fields: [questionId], references: [id])
+  votes      Vote[]
+  testAnswers TestAnswer[]
+}
+
+model Comment {
+  id         Int       @id @default(autoincrement())
+  testerId   String
+  questionId Int
+  mbti       String
+  content    String
+  createdAt  DateTime  @default(now())
+
+  question   Question  @relation(fields: [questionId], references: [id])
+  tester     Tester    @relation(fields: [testerId], references: [testerId])
+}
+
+model Vote {
+  id         Int       @id @default(autoincrement())
+  testerId   String
+  questionId Int
+  answerId   Int
+
+  question   Question  @relation(fields: [questionId], references: [id])
+  answer     Answer    @relation(fields: [answerId], references: [id])
+  tester     Tester    @relation(fields: [testerId], references: [testerId])
+}
+
+model Result {
+  id          Int          @id @default(autoincrement())
+  testerId    String
+  prevMbti    String
+  nextMbti    String
+  description String
+  imageUrl    String?
+
+  testAnswers TestAnswer[]
+  tester      Tester       @relation(fields: [testerId], references: [testerId])
+}
+
+model TestAnswer {
+  id         Int       @id @default(autoincrement())
+  resultId   Int
+  questionId Int
+  answerId   Int
+
+  result     Result    @relation(fields: [resultId], references: [id])
+  question   Question  @relation(fields: [questionId], references: [id])
+  answer     Answer    @relation(fields: [answerId], references: [id])
+}
+
+model Tester {
+  testerId  String    @id @unique
+  comments  Comment[]
+  votes     Vote[]
+  results   Result[]
+}
