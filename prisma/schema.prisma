@@ -25,7 +25,7 @@ model Answer {
   tag        String
   countMeta  Json?
 
-  question   Question  @relation(fields: [questionId], references: [id])
+  question   Question? @relation(fields: [questionId], references: [id])
   votes      Vote[]
   testAnswers TestAnswer[]
 }
@@ -38,8 +38,8 @@ model Comment {
   content    String
   createdAt  DateTime  @default(now())
 
-  question   Question  @relation(fields: [questionId], references: [id])
-  tester     Tester    @relation(fields: [testerId], references: [testerId])
+  question   Question?  @relation(fields: [questionId], references: [id])
+  tester     Tester?    @relation(fields: [testerId], references: [testerId])
 }
 
 model Vote {
@@ -48,9 +48,9 @@ model Vote {
   questionId Int
   answerId   Int
 
-  question   Question  @relation(fields: [questionId], references: [id])
-  answer     Answer    @relation(fields: [answerId], references: [id])
-  tester     Tester    @relation(fields: [testerId], references: [testerId])
+  question   Question? @relation(fields: [questionId], references: [id])
+  answer     Answer?    @relation(fields: [answerId], references: [id])
+  tester     Tester?    @relation(fields: [testerId], references: [testerId])
 }
 
 model Result {
@@ -62,18 +62,18 @@ model Result {
   imageUrl    String?
 
   testAnswers TestAnswer[]
-  tester      Tester       @relation(fields: [testerId], references: [testerId])
+  tester      Tester?       @relation(fields: [testerId], references: [testerId])
 }
 
 model TestAnswer {
-  id         Int       @id @default(autoincrement())
+  id         Int        @id @default(autoincrement())
   resultId   Int
   questionId Int
   answerId   Int
 
-  result     Result    @relation(fields: [resultId], references: [id])
-  question   Question  @relation(fields: [questionId], references: [id])
-  answer     Answer    @relation(fields: [answerId], references: [id])
+  result     Result?    @relation(fields: [resultId], references: [id])
+  question   Question?  @relation(fields: [questionId], references: [id])
+  answer     Answer?    @relation(fields: [answerId], references: [id])
 }
 
 model Tester {

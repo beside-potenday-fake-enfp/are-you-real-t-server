@@ -169,15 +169,15 @@ export class QuestionsService {
     if (answer) {
       const countMeta = (answer.countMeta as Prisma.JsonObject) || {};
       const updatedCountMeta = {
-        ...countMeta,
         total: ((countMeta.total as number) || 0) + 1,
+        tag1: { tag: countMeta.tag, count: 0 },
+        tag2: { tag: countMeta.tag, count: 0 },
       };
 
-      const testerTag = voteData.testerId[0];
-      if (updatedCountMeta[testerTag]) {
-        updatedCountMeta[testerTag].count += 1;
-      } else {
-        updatedCountMeta[testerTag] = { tag: testerTag, count: 1 };
+      if (voteData.testerId[0] === updatedCountMeta.tag1.tag) {
+        updatedCountMeta.tag1.count += 1;
+      } else if (voteData.testerId[0] === updatedCountMeta.tag2.tag) {
+        updatedCountMeta.tag2.count += 1;
       }
 
       await this.prisma.answer.update({
@@ -216,23 +216,42 @@ export class QuestionsService {
       throw new Error('존재하지 않는 결과지입니다.');
     }
 
-    const changedQuestions = testResult.testAnswers.map((testAnswer) => ({
-      prevType: testAnswer.question.type,
-      nextType: testAnswer.answer.tag,
-      title: `너 ${testAnswer.question.type} 아닌 거 같은데?`,
-      question: {
-        id: testAnswer.question.id,
-        type: testAnswer.question.type,
-        content: testAnswer.question.content,
-        answerList: testAnswer.question.answers.map((answer) => ({
-          id: answer.id,
-          content: answer.content,
-          tag: answer.tag,
-          countMeta: answer.countMeta,
-        })),
-        votedAnswerId: testAnswer.answer.id,
-      },
-    }));
+    const changedQuestions = testResult.testAnswers.map((testAnswer) => {
+      const prevType =
+        testAnswer.answer.tag === 'I'
+          ? 'E'
+          : testAnswer.answer.tag === 'E'
+            ? 'I'
+            : testAnswer.answer.tag === 'S'
+              ? 'N'
+              : testAnswer.answer.tag === 'N'
+                ? 'S'
+                : testAnswer.answer.tag === 'T'
+                  ? 'F'
+                  : testAnswer.answer.tag === 'F'
+                    ? 'T'
+                    : testAnswer.answer.tag === 'J'
+                      ? 'P'
+                      : 'J';
+
+      return {
+        prevType,
+        nextType: testAnswer.answer.tag,
+        title: `너 ${testAnswer.question.type} 아닌 거 같은데?`,
+        question: {
+          id: testAnswer.question.id,
+          type: testAnswer.question.type,
+          content: testAnswer.question.content,
+          answerList: testAnswer.question.answers.map((answer) => ({
+            id: answer.id,
+            content: answer.content,
+            tag: answer.tag,
+            countMeta: answer.countMeta,
+          })),
+          votedAnswerId: testAnswer.answer.id,
+        },
+      };
+    });
 
     const recommendQuestions = await this.prisma.question.findMany({
       where: {
