@@ -201,7 +201,11 @@ export class QuestionsService {
     }
 
     const newVote = await this.prisma.vote.create({
-      data: voteData,
+      data: {
+        testerId,
+        questionId,
+        answerId,
+      },
     });
 
     // 투표한 답변의 countMeta 업데이트
