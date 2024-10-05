@@ -71,7 +71,7 @@ export class QuestionsService {
 
     const userVote = await this.prisma.vote.findFirst({
       where: {
-        testerId: parseInt(testerId),
+        testerId: testerId,
         questionId: parseInt(id),
       },
     });
@@ -113,7 +113,7 @@ export class QuestionsService {
 
   // 5. 댓글 작성
   async createComment(commentData: {
-    testerId: number;
+    testerId: string;
     questionId: number;
     mbti: string;
     content: string;
@@ -140,7 +140,7 @@ export class QuestionsService {
 
   // 6. 답변 투표
   async vote(voteData: {
-    testerId: number;
+    testerId: string;
     questionId: number;
     answerId: number;
   }) {
@@ -261,7 +261,7 @@ export class QuestionsService {
   // 8. 결과지 생성
   async createResult(body: {
     answerId: number[];
-    testerId: number;
+    testerId: string;
     prevMbti: string;
   }) {
     // tester 데이터 생성

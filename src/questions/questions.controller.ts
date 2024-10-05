@@ -28,7 +28,7 @@ export class QuestionsController {
   createComment(
     @Body()
     commentData: {
-      testerId: number;
+      testerId: string;
       questionId: number;
       mbti: string;
       content: string;
@@ -42,7 +42,7 @@ export class QuestionsController {
   vote(
     @Body()
     voteData: {
-      testerId: number;
+      testerId: string;
       questionId: number;
       answerId: number;
     },
@@ -59,7 +59,7 @@ export class QuestionsController {
   // 8. POST /questions/result - 결과지 생성(결과지 id 반환)
   @Post('/result')
   createResult(
-    @Body() body: { answerId: number[]; testerId: number; prevMbti: string },
+    @Body() body: { answerId: number[]; testerId: string; prevMbti: string },
   ) {
     return this.questionsService.createResult(body);
   }
