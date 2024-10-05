@@ -14,14 +14,16 @@ export class QuestionsService {
     for (const type of types) {
       const typeQuestions = await this.prisma.question.findMany({
         where: { type },
-        take: 3,
-        orderBy: { id: 'asc' },
         include: {
           answers: true,
         },
       });
-      questions.push(...typeQuestions);
+
+      const shuffledQuestions = typeQuestions.sort(() => 0.5 - Math.random());
+      questions.push(...shuffledQuestions.slice(0, 3));
     }
+
+    questions.sort((a, b) => a.id - b.id);
 
     return questions.map((question) => ({
       id: question.id,
