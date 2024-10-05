@@ -65,6 +65,18 @@ model Result {
   tester      Tester?       @relation(fields: [testerId], references: [id])
 }
 
+model MbtiDescription {
+  id            Int      @id @default(autoincrement())
+  mbti          String   @unique
+  description   String
+}
+
+model TagDescription {
+  id            Int      @id @default(autoincrement())
+  tag           String   @unique
+  description   String
+}
+
 model TestAnswer {
   id         Int        @id @default(autoincrement())
   resultId   Int?
