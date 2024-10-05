@@ -78,6 +78,7 @@ model TestAnswer {
 
 model Tester {
   testerId  String       @id @unique
+  mbti      String
   comments  Comment[]
   votes     Vote[]
   results   Result[]

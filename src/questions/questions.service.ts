@@ -126,7 +126,7 @@ export class QuestionsService {
 
     if (!tester) {
       tester = await this.prisma.tester.create({
-        data: { testerId: commentData.testerId },
+        data: { testerId: commentData.testerId, mbti: commentData.mbti },
       });
     }
 
@@ -145,16 +145,19 @@ export class QuestionsService {
     testerId: string;
     questionId: number;
     answerId: number;
+    mbti: string;
   }) {
+    const { testerId, questionId, answerId, mbti } = voteData;
     // tester 데이터 생성
     let tester = await this.prisma.tester.findUnique({
-      where: { testerId: voteData.testerId },
+      where: { testerId },
     });
 
     if (!tester) {
       tester = await this.prisma.tester.create({
         data: {
-          testerId: voteData.testerId,
+          testerId,
+          mbti,
         },
       });
     }
@@ -165,22 +168,31 @@ export class QuestionsService {
 
     // 투표한 답변의 countMeta 업데이트
     const answer = await this.prisma.answer.findUnique({
-      where: { id: voteData.answerId },
+      where: { id: answerId },
+      include: { question: true },
     });
 
     if (answer) {
-      const countMeta = (answer.countMeta as Prisma.JsonObject) || {};
-      const updatedCountMeta = {
-        total: ((countMeta.total as number) || 0) + 1,
-        tag1: { tag: countMeta.tag, count: 0 },
-        tag2: { tag: countMeta.tag, count: 0 },
-      };
+      const countMeta: any = answer.countMeta || {};
 
-      if (voteData.testerId[0] === updatedCountMeta.tag1.tag) {
-        updatedCountMeta.tag1.count += 1;
-      } else if (voteData.testerId[0] === updatedCountMeta.tag2.tag) {
-        updatedCountMeta.tag2.count += 1;
-      }
+      const [tag1, tag2] =
+        answer.question.type === 'energy'
+          ? ['I', 'E']
+          : answer.question.type === 'information'
+            ? ['S', 'N']
+            : answer.question.type === 'decision'
+              ? ['T', 'F']
+              : ['P', 'J'];
+
+      const count1 = await this.prisma.vote.findMany({
+        where: {
+          questionId,
+        },
+      });
+
+      const updatedCountMeta = {
+        total: (countMeta.total || 0) + 1,
+      };
 
       await this.prisma.answer.update({
         where: { id: voteData.answerId },
@@ -285,6 +297,7 @@ export class QuestionsService {
     testerId: string;
     prevMbti: string;
   }) {
+    const { answerId, testerId, prevMbti } = body;
     // tester 데이터 생성
     let tester = await this.prisma.tester.findUnique({
       where: { testerId: body.testerId },
@@ -293,7 +306,8 @@ export class QuestionsService {
     if (!tester) {
       tester = await this.prisma.tester.create({
         data: {
-          testerId: body.testerId,
+          testerId,
+          mbti: prevMbti,
         },
       });
     }

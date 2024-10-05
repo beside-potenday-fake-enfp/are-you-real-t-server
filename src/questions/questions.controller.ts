@@ -45,6 +45,7 @@ export class QuestionsController {
       testerId: string;
       questionId: number;
       answerId: number;
+      mbti: string;
     },
   ) {
     return this.questionsService.vote(voteData);
