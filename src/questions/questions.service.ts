@@ -120,18 +120,31 @@ export class QuestionsService {
     mbti: string;
     content: string;
   }) {
+    const { testerId, questionId, mbti, content } = commentData;
+
     let tester = await this.prisma.tester.findUnique({
-      where: { id: commentData.testerId },
+      where: { id: testerId },
     });
 
     if (!tester) {
       tester = await this.prisma.tester.create({
-        data: { id: commentData.testerId, mbti: commentData.mbti },
+        data: {
+          id: testerId,
+          mbti,
+        },
       });
     }
 
+    // 결과지에서 mbti 새롭게 바뀐 경우, 신규 mbti로 업데이트
+    const newMbti = mbti != tester.mbti ? tester.mbti : mbti;
+
     const newComment = await this.prisma.comment.create({
-      data: commentData,
+      data: {
+        testerId,
+        questionId,
+        mbti: newMbti,
+        content,
+      },
     });
 
     return {
@@ -148,6 +161,7 @@ export class QuestionsService {
     mbti: string;
   }) {
     const { testerId, questionId, answerId, mbti } = voteData;
+
     // tester 데이터 생성
     let tester = await this.prisma.tester.findUnique({
       where: { id: testerId },
