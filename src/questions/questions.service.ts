@@ -355,51 +355,124 @@ export class QuestionsService {
       throw new Error('존재하지 않는 결과지입니다.');
     }
 
-    const changedQuestions = testResult.testAnswers.map((testAnswer) => {
+    const mbtiTags = [
+      { index: 0, type: 'energy', tags: ['I', 'E'] },
+      { index: 1, type: 'information', tags: ['S', 'N'] },
+      { index: 2, type: 'decision', tags: ['T', 'F'] },
+      { index: 3, type: 'lifestyle', tags: ['J', 'P'] },
+    ];
+
+    let changedQuestions = await Promise.all(
+      mbtiTags.map(async (tagInfo) => {
+        const prevType = testResult.prevMbti[tagInfo.index];
+        const nextType = testResult.nextMbti[tagInfo.index];
+
+        if (prevType !== nextType) {
+          const relatedTestAnswer = testResult.testAnswers.find(
+            (testAnswer) =>
+              testAnswer?.answer?.tag === nextType &&
+              testAnswer?.question?.type === tagInfo.type,
+          );
+          if (relatedTestAnswer) {
+            const tagDescription = await this.prisma.tagDescription.findUnique({
+              where: {
+                tag: nextType,
+              },
+            });
+
+            return {
+              prevType,
+              nextType,
+              title: tagDescription?.description,
+              question: {
+                id: relatedTestAnswer.question.id,
+                type: relatedTestAnswer.question.type,
+                content: relatedTestAnswer.question.content,
+                answerList: relatedTestAnswer.question.answers.map(
+                  (answer) => ({
+                    id: answer.id,
+                    content: answer.content,
+                    tag: answer.tag,
+                    countMeta: {
+                      total: 10,
+                      tag1: { tag: 'I', count: '7' },
+                      tag2: { tag: 'E', count: '3' },
+                    },
+                  }),
+                ),
+                votedAnswerId: relatedTestAnswer.answer.id,
+              },
+            };
+          }
+        }
+      }),
+    );
+
+    const filteredChangedQuestions = changedQuestions.filter(Boolean);
+
+    // 태그가 변경된 것이 없으면 유저가 고른 질문 중
+    if (filteredChangedQuestions.length === 0) {
+      const randomTestAnswer =
+        testResult.testAnswers[
+          Math.floor(Math.random() * testResult.testAnswers.length)
+        ];
+      const randomAnswer = randomTestAnswer.answer;
+
+      // prevType은 randomAnswer의 반대 타입으로 설정
       const prevType =
-        testAnswer.answer.tag === 'I'
+        randomAnswer.tag === 'I'
           ? 'E'
-          : testAnswer.answer.tag === 'E'
+          : randomAnswer.tag === 'E'
             ? 'I'
-            : testAnswer.answer.tag === 'S'
+            : randomAnswer.tag === 'S'
               ? 'N'
-              : testAnswer.answer.tag === 'N'
+              : randomAnswer.tag === 'N'
                 ? 'S'
-                : testAnswer.answer.tag === 'T'
+                : randomAnswer.tag === 'T'
                   ? 'F'
-                  : testAnswer.answer.tag === 'F'
+                  : randomAnswer.tag === 'F'
                     ? 'T'
-                    : testAnswer.answer.tag === 'J'
+                    : randomAnswer.tag === 'J'
                       ? 'P'
                       : 'J';
 
-      return {
+      const tagDescription = await this.prisma.tagDescription.findUnique({
+        where: {
+          tag: randomAnswer.tag,
+        },
+      });
+
+      const questionForChange = {
         prevType,
-        nextType: testAnswer.answer.tag,
-        title: `너 ${testAnswer.question.type} 아닌 거 같은데?`,
+        nextType: randomAnswer.tag,
+        title: tagDescription?.description,
         question: {
-          id: testAnswer.question.id,
-          type: testAnswer.question.type,
-          content: testAnswer.question.content,
-          answerList: testAnswer.question.answers.map((answer) => ({
+          id: randomTestAnswer.question.id,
+          type: randomTestAnswer.question.type,
+          content: randomTestAnswer.question.content,
+          answerList: randomTestAnswer.question.answers.map((answer) => ({
             id: answer.id,
             content: answer.content,
             tag: answer.tag,
             countMeta: {
-              total: 10,
+              total: 20,
               tag1: { tag: 'I', count: '7' },
               tag2: { tag: 'E', count: '3' },
             },
           })),
-          votedAnswerId: testAnswer.answer.id,
+          votedAnswerId: randomAnswer.id,
         },
       };
-    });
+
+      changedQuestions = [questionForChange];
+    }
 
     const recommendQuestions = await this.prisma.question.findMany({
       where: {
         id: {
-          notIn: changedQuestions.map((q) => q.question.id),
+          notIn: changedQuestions
+            .filter((q) => q?.question) // question이 존재하는 경우만 필터링
+            .map((q) => q.question.id), // id만 추출
         },
       },
       take: 2,
@@ -487,13 +560,18 @@ export class QuestionsService {
 
     const baseUrl = 'https://fake-enfp.shop';
     const lastImageName = `/public/${nextMbti}.png`;
+    const mbtiDescription = await this.prisma.mbtiDescription.findUnique({
+      where: {
+        mbti: nextMbti,
+      },
+    });
 
     const newResult = await this.prisma.result.create({
       data: {
         testerId: body.testerId,
         prevMbti: body.prevMbti,
         nextMbti,
-        description: `이전 MBTI: ${body.prevMbti}, 새로운 MBTI: ${nextMbti}`,
+        description: mbtiDescription.description,
         imageUrl: `${baseUrl}${lastImageName}`,
         testAnswers: {
           create: testAnswerData,
