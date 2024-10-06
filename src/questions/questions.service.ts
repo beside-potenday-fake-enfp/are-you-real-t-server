@@ -475,8 +475,10 @@ export class QuestionsService {
             .map((q) => q.question.id), // id만 추출
         },
       },
-      take: 2,
     });
+    const twoRecommendQuestions = recommendQuestions
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 2);
 
     return {
       id: testResult.id,
@@ -485,7 +487,7 @@ export class QuestionsService {
       description: testResult.description,
       imageUrl: testResult.imageUrl,
       changedQuestions,
-      recommendQuestions: recommendQuestions.map((question) => ({
+      recommendQuestions: twoRecommendQuestions.map((question) => ({
         id: question.id,
         type: question.type,
         content: question.content,
@@ -579,8 +581,8 @@ export class QuestionsService {
       },
     });
 
-    return {
-      resultId: newResult.id,
-    };
+    const resultDetail = await this.getTestResultById(newResult.id.toString());
+
+    return resultDetail;
   }
 }
