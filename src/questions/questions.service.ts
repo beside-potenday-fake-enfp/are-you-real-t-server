@@ -230,6 +230,10 @@ export class QuestionsService {
                 tag: nextType,
               },
             });
+            const voteCount = relatedTestAnswer.question.answers.reduce(
+              (total, answer) => total + (answer.selectCount || 0),
+              0,
+            );
 
             return {
               prevType,
@@ -247,6 +251,7 @@ export class QuestionsService {
                     selectCount: answer.selectCount || 0,
                   }),
                 ),
+                voteCount,
                 votedAnswerId: relatedTestAnswer.answer.id,
               },
             };
@@ -289,6 +294,11 @@ export class QuestionsService {
         },
       });
 
+      const voteCount = randomTestAnswer.question.answers.reduce(
+        (total, answer) => total + (answer.selectCount || 0),
+        0,
+      );
+
       const questionForChange = {
         prevType,
         nextType: randomAnswer.tag,
@@ -303,6 +313,7 @@ export class QuestionsService {
             tag: answer.tag,
             selectCount: answer.selectCount || 0,
           })),
+          voteCount,
           votedAnswerId: randomAnswer.id,
         },
       };
