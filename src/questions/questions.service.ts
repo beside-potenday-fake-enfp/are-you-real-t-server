@@ -412,6 +412,22 @@ export class QuestionsService {
           questionId: answer.question.id,
         });
       }
+
+      // 각 답변에 대한 투표 생성
+      await this.prisma.vote.create({
+        data: {
+          testerId: testerId,
+          questionId: answer.question.id,
+          answerId: answer.id,
+        },
+      });
+      // 투표한 답변의 selectCount 증가
+      await this.prisma.answer.update({
+        where: { id: answer.id },
+        data: {
+          selectCount: { increment: 1 },
+        },
+      });
     }
 
     const baseUrl = 'https://fake-enfp.shop';
