@@ -210,7 +210,7 @@ export class QuestionsService {
       { index: 0, type: 'energy', tags: ['I', 'E'] },
       { index: 1, type: 'information', tags: ['S', 'N'] },
       { index: 2, type: 'decision', tags: ['T', 'F'] },
-      { index: 3, type: 'lifestyle', tags: ['J', 'P'] },
+      { index: 3, type: 'lifeStyle', tags: ['J', 'P'] },
     ];
 
     let changedQuestions = await Promise.all(
