@@ -23,9 +23,9 @@ export class QuestionsService {
       questions.push(...shuffledQuestions.slice(0, 3));
     }
 
-    questions.sort((a, b) => a.id - b.id);
+    const entireShuffledQuestions = questions.sort(() => 0.5 - Math.random());
 
-    return questions.map((question) => ({
+    return entireShuffledQuestions.map((question) => ({
       id: question.id,
       content: question.content,
       imageUrl: question.imageUrl,
@@ -321,12 +321,20 @@ export class QuestionsService {
       changedQuestions = [questionForChange];
     }
 
+    // 유저가 검증에서 선택한 질문(testAnswers)에 해당하는 질문의 id를 추출
+    const testAnswerQuestionIds = testResult.testAnswers.map(
+      (testAnswer) => testAnswer.question.id,
+    );
+
     const recommendQuestions = await this.prisma.question.findMany({
       where: {
         id: {
-          notIn: changedQuestions
-            .filter((q) => q?.question) // question이 존재하는 경우만 필터링
-            .map((q) => q.question.id), // id만 추출
+          notIn: [
+            ...changedQuestions
+              .filter((q) => q?.question)
+              .map((q) => q.question.id),
+            ...testAnswerQuestionIds,
+          ],
         },
       },
     });
