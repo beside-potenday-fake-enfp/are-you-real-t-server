@@ -135,14 +135,11 @@ export class QuestionsService {
       });
     }
 
-    // 결과지에서 mbti 새롭게 바뀐 경우, 신규 mbti로 업데이트
-    const newMbti = mbti != tester.mbti ? tester.mbti : mbti;
-
     const newComment = await this.prisma.comment.create({
       data: {
         testerId,
         questionId,
-        mbti: newMbti,
+        mbti,
         content,
       },
     });
