@@ -19,11 +19,12 @@ model Question {
 }
 
 model Answer {
-  id         Int       @id @default(autoincrement())
-  questionId Int?
-  content    String?
-  tag        String?
-  countMeta  Json?
+  id          Int       @id @default(autoincrement())
+  questionId  Int?
+  content     String?
+  tag         String?
+  countMeta   Json?
+  selectCount Int       @default(0)
 
   question   Question? @relation(fields: [questionId], references: [id])
   votes      Vote[]
