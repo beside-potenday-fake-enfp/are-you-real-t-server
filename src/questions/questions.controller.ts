@@ -33,20 +33,6 @@ export class QuestionsController {
     return this.questionsService.vote(voteData);
   }
 
-  // GET /questions/result/:id - 결과지 상세 반환
-  @Get('/result/:id')
-  getTestResultById(@Param('id') id: string) {
-    return this.questionsService.getTestResultById(id);
-  }
-
-  // POST /questions/result - 결과지 생성(결과지 id 반환)
-  @Post('/result')
-  createResult(
-    @Body() body: { answerId: number[]; testerId: string; prevMbti: string },
-  ) {
-    return this.questionsService.createResult(body);
-  }
-
   // GET /questions/:id - 질문 상세 반환
   @Get('/:id')
   getQuestionById(
